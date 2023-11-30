@@ -1,0 +1,50 @@
+{
+    "package_version": 2,
+    "version": "1.0.0",
+    "name": "easy-sprite-atlas",
+    "description": "i18n:easy-sprite-atlas.description",
+    "main": "./dist/main.js",
+    "dependencies": {
+        "fs-extra": "^10.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^16.0.1",
+        "@types/fs-extra": "^9.0.5",
+        "typescript": "^4.3.4"
+    },
+    "panels": {
+        "default": {
+            "title": "Easy SpriteAtlas",
+            "type": "dockable",
+            "main": "dist/panels/default",
+            "size": {
+                "min-width": 400,
+                "min-height": 300,
+                "width": 1024,
+                "height": 600
+            }
+        }
+    },
+    "contributions": {
+        "menu": [
+            {
+                "path": "i18n:menu.panel/Easy SpriteAtlas",
+                "label": "i18n:easy-sprite-atlas.open_panel",
+                "message": "open-panel"
+            }
+        ],
+        "messages": {
+            "open-panel": {
+                "methods": [
+                    "openPanel"
+                ]
+            }
+        }
+    },
+    "author": "UNTEK LLC",
+    "editor": ">=3.8.1",
+    "scripts": {
+        "build": "tsc -b",
+        "watch": "tsc -w"
+    }
+}

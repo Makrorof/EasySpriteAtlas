@@ -90,7 +90,7 @@ module.exports = Editor.Panel.define({
                 for (let index = 0; index < values.length; index++) {
                     const element = values[index];
                     let template = `<span title="${element}">${element}</span>`
-                    
+
                     if (index != 0 && index + 1 != values.length) {
                         this.$.assetPath.innerHTML += slashTemplate
                     }
@@ -102,7 +102,10 @@ module.exports = Editor.Panel.define({
                 this.createSprite(assetInfo.uuid, assetInfo.name);
             } else if (assetInfo.type === "cc.SpriteAtlas") {
                 let index = 0;
-                for (let key in assetInfo.subAssets) {
+                const subAssets = Object.keys(assetInfo.subAssets).map(key => assetInfo.subAssets[key] as AssetInfo);
+                subAssets.sort((a, b) => a.name.localeCompare(b.name));
+
+                subAssets.forEach(async (asset) => {
                     if (index % 50 == 0) {
                         await delay(500);
                     }
@@ -112,9 +115,9 @@ module.exports = Editor.Panel.define({
                         return;
                     }
 
-                    let value: AssetInfo = assetInfo.subAssets[key];
-                    this.createSprite(value.uuid, value.name);
-                }
+                    this.createSprite(asset.uuid, asset.name);
+                })
+
                 //console.log(assetInfo.subAssets);
             }
 

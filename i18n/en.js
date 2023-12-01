@@ -1,1 +1,1 @@
-"use strict";module.exports={open_panel:"Assets Preview", description:"Easy to use for SpriteAtlas"};
+"use strict";module.exports={open_panel:"Assets Preview", description:"Easy to use for SpriteAtlas", search:"Search"};

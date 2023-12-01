@@ -155,3 +155,22 @@
     user-select: text;
     color: var(--color-default-contrast-emphasis);
 }
+
+.right{
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+}
+
+.right > div {
+    display: flex;
+}
+
+.search{
+    right: 0;
+}
+
+
+.hide{
+    display: none;
+}

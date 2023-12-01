@@ -12,8 +12,8 @@ const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 // Editor.Panel.define = Editor.Panel.define || function(options: any) { return options }
 module.exports = Editor.Panel.define({
     listeners: {
-        show() { console.log('show'); },
-        hide() { console.log('hide'); },
+        show() { },
+        hide() { },
     },
     template: readFileSync(join(__dirname, '../../../static/template/default/index.html'), 'utf-8'),
     style: readFileSync(join(__dirname, '../../../static/style/default/index.css'), 'utf-8'),
@@ -21,6 +21,7 @@ module.exports = Editor.Panel.define({
         container: '.container',
         assetPath: '.assetPath',
         assetUrl: '.assetUrl',
+        search: ".search",
     },
     methods: {
         createSprite(uuid: string, fileName: string) {
@@ -28,21 +29,14 @@ module.exports = Editor.Panel.define({
                 return;
             }
 
-            //let template = `<ui-drag-item class="item" type="cc.SpriteFrame" value="${uuid}" draggable="true" additional='[{"type":"cc.SpriteFrame","value":"${uuid}"},{"type":"cc.Asset","value":"${uuid}"}]'>
-            //                    <ui-image readonly value="${uuid}" class="icon thumbnail"></ui-image>
-            //                    <div class="name"><span>${fileName}</span></div>
-            //               </ui-drag-item>`;
-
-            let template = `<ui-image readonly value="${uuid}" class="icon thumbnail"></ui-image>
-                            <div class="name"><span>${fileName}</span></div>`;
-
-            //this.$.container.innerHTML += template;
+            let template = `<ui-image readonly value="${uuid}" class="icon thumbnail"></ui-image><div class="name"><span>${fileName}</span></div>`;
 
             let node = document.createElement("ui-drag-item")
             node.className = "item";
             node.setAttribute("value", uuid);
             node.setAttribute("draggable", "true");
             node.setAttribute("additional", `[{"type":"cc.SpriteFrame","value":"${uuid}"},{"type":"cc.Asset","value":"${uuid}"}]`);
+            node.setAttribute("fileName", fileName);
             node.innerHTML = template;
 
             this.$.container.appendChild(node);
@@ -54,25 +48,35 @@ module.exports = Editor.Panel.define({
 
             this.$.container.innerHTML = "";
         },
-        async update() {
-            const th = this;
+        getSelectedAssetUUIDIfChanged(): string {
             let type = Editor.Selection.getLastSelectedType();
 
             if (type !== "asset") {
-                return;
+                return "";
             }
 
             let uuid = Editor.Selection.getLastSelected(type);
 
             if (lastUUID == uuid) {
-                return;
+                return "";
             }
 
             lastUUID = uuid;
+            return uuid;
+        },
+        async getAssetInfo(uuid: string): Promise<AssetInfo | null> {
+            return Editor.Message.request('asset-db', 'query-asset-info', uuid);
+        },
+        async update() {
+            let uuid = this.getSelectedAssetUUIDIfChanged();
+
+            if (uuid == "") {
+                return;
+            }
 
             this.clearSprites();
 
-            const assetInfo: AssetInfo | null = await Editor.Message.request('asset-db', 'query-asset-info', uuid);
+            const assetInfo: AssetInfo | null = await this.getAssetInfo(uuid);
             if (!assetInfo) {
                 return;
             }
@@ -117,11 +121,7 @@ module.exports = Editor.Panel.define({
 
                     this.createSprite(asset.uuid, asset.name);
                 })
-
-                //console.log(assetInfo.subAssets);
             }
-
-            //console.log("AssetInfo: ", assetInfo)
         },
         loop() {
             const th = this;
@@ -132,14 +132,39 @@ module.exports = Editor.Panel.define({
 
             this.update();
         },
+        findAsset(text: string | null | undefined) {
+            if (!this.$.container) {
+                return;
+            }
+
+            if (!text) {
+                this.$.container.querySelectorAll("ui-drag-item").forEach((data) => {
+                    data.classList.remove("hide")
+                })
+
+                return;
+            }
+
+            this.$.container.querySelectorAll("ui-drag-item").forEach((data) => {
+                let name = data.getAttribute("fileName");
+                let index = name?.indexOf(text);
+
+                if (index != undefined && index >= 0) {
+                    //console.log("Image:", name);
+                    data.classList.remove("hide")
+                } else {
+                    data.classList.add("hide")
+                }
+            })
+        },
     },
     ready() {
-        this.loop();
+        this.$.search?.addEventListener("change", () => {
+            let val = this.$.search?.getAttribute("value");
+            this.findAsset(val);
+        });
 
-        //this.createSprite("51fdc5b0-726a-4c84-ae02-695f0816f7dc");
-        //this.createSprite("a6d0260b-23c4-4d10-8abc-cd8d79ff270c");
-        //this.createSprite("e6805ea0-5055-4a56-9674-a51cec1fe626");
-        //this.createSprite("80bff6ea-334c-4acb-9e9a-03aa8679f1ca");
+        this.loop();
     },
     beforeClose() { },
     close() { },

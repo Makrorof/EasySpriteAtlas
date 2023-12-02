@@ -24,20 +24,39 @@
                 "width": 1024,
                 "height": 600
             }
+        },
+        "upgrade-to-atlas": {
+            "title": "Upgrade To Atlas",
+            "type": "dockable",
+            "main": "dist/panels/upgrade-to-atlas",
+            "icon": "./static/icons/upgrade-to-atlas.png",
+            "size": {
+                "min-width": 400,
+                "min-height": 300,
+                "width": 1024,
+                "height": 600
+            }
         }
     },
     "contributions": {
-        "menu": [
-            {
-                "path": "i18n:menu.panel/Easy SpriteAtlas",
-                "label": "i18n:easy-sprite-atlas.open_panel",
-                "message": "open-panel"
-            }
-        ],
+        "menu": [{
+            "path": "i18n:menu.panel/Easy SpriteAtlas",
+            "label": "i18n:easy-sprite-atlas.open_preview_panel",
+            "message": "open_preview_panel"
+        }, {
+            "path": "i18n:menu.panel/Easy SpriteAtlas",
+            "label": "i18n:easy-sprite-atlas.open_upgrade_panel",
+            "message": "open_upgrade_panel"
+        }],
         "messages": {
-            "open-panel": {
+            "open_preview_panel": {
                 "methods": [
-                    "openPanel"
+                    "openPreviewPanel"
+                ]
+            },
+            "open_upgrade_panel": {
+                "methods": [
+                    "openUpgradePanel"
                 ]
             }
         }

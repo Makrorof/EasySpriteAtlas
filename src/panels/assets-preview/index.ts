@@ -74,6 +74,7 @@ module.exports = Editor.Panel.define({
                 return;
             }
 
+            this.$.search?.setAttribute("value", "");
             this.clearSprites();
 
             const assetInfo: AssetInfo | null = await this.getAssetInfo(uuid);

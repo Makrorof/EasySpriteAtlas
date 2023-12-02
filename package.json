@@ -13,10 +13,11 @@
         "typescript": "^4.3.4"
     },
     "panels": {
-        "default": {
-            "title": "Easy SpriteAtlas",
+        "assets-preview": {
+            "title": "Assets Preview",
             "type": "dockable",
-            "main": "dist/panels/default",
+            "main": "dist/panels/assets-preview",
+            "icon": "./static/icons/assets-preview.png",
             "size": {
                 "min-width": 400,
                 "min-height": 300,

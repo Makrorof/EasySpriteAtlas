@@ -276,9 +276,11 @@ module.exports = Editor.Panel.define({
             if (assets.length == 0)
                 return;
 
-            scene.children.forEach((node: INode) => {
-                this.changeSprites(node, assets);
+            scene.children.forEach(async (node: INode) => {
+                await this.changeSprites(node, assets);
             })
+
+            console.log("Replaced Successfully.")
         });
 
         this.loop();
